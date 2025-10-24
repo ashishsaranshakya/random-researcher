@@ -1,4 +1,4 @@
-package com.ashishsaranshakya.googlesearchmcpserver.config;
+package com.ashishsaranshakya.contentmcpserver.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

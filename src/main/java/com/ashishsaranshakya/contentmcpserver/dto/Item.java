@@ -1,4 +1,4 @@
-package com.ashishsaranshakya.googlesearchmcpserver.dto;
+package com.ashishsaranshakya.contentmcpserver.dto;
 
 public record Item(
         String title,

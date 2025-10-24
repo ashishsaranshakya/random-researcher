@@ -1,4 +1,4 @@
-package com.ashishsaranshakya.googlesearchmcpserver.dto;
+package com.ashishsaranshakya.contentmcpserver.dto;
 
 
 import java.util.List;

@@ -1,7 +1,7 @@
-package com.ashishsaranshakya.googlesearchmcpserver;
+package com.ashishsaranshakya.contentmcpserver;
 
-import com.ashishsaranshakya.googlesearchmcpserver.tools.FetchContentTool;
-import com.ashishsaranshakya.googlesearchmcpserver.tools.GoogleSearchTool;
+import com.ashishsaranshakya.contentmcpserver.tools.FetchContentTool;
+import com.ashishsaranshakya.contentmcpserver.tools.GoogleSearchTool;
 import org.springframework.ai.tool.ToolCallbackProvider;
 import org.springframework.ai.tool.method.MethodToolCallbackProvider;
 import org.springframework.boot.SpringApplication;

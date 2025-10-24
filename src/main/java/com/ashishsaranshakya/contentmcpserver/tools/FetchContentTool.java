@@ -1,4 +1,4 @@
-package com.ashishsaranshakya.googlesearchmcpserver.tools;
+package com.ashishsaranshakya.contentmcpserver.tools;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;

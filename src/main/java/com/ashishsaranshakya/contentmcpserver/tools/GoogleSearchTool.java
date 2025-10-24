@@ -1,7 +1,7 @@
-package com.ashishsaranshakya.googlesearchmcpserver.tools;
+package com.ashishsaranshakya.contentmcpserver.tools;
 
 
-import com.ashishsaranshakya.googlesearchmcpserver.dto.GoogleSearchResponse;
+import com.ashishsaranshakya.contentmcpserver.dto.GoogleSearchResponse;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

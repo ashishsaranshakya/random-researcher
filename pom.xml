@@ -9,10 +9,10 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.ashishsaranshakya</groupId>
-    <artifactId>google-search-mcp-server</artifactId>
+    <artifactId>content-mcp-server</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>google-search-mcp-server</name>
-    <description>google-search-mcp-server</description>
+    <name>content-mcp-server</name>
+    <description>content-mcp-server</description>
     <url/>
     <licenses>
         <license/>
