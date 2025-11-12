@@ -12,41 +12,44 @@ import java.io.File;
 
 @Service
 public class EmailService {
+    public enum ContentType {
+        TEXT,
+        HTML
+    }
 
-    // ... (Inside the SynthesisTool component) ...
     @Autowired
-    private JavaMailSender mailSender; // Injected by Spring Boot Starter Mail
+    private JavaMailSender mailSender;
 
-    // 🚩 Tool 2: Email Sending
-    @Tool(name = "send_study_guide_email",
-            description = "Sends the generated PDF file as an attachment to the specified recipient.")
-    public String sendEmail(String recipientEmail, String subject, String pdfFilePath) {
-
-        // Use the username from application.properties as the sender
+    @Tool(name = "send_email",
+            description = "Send the generated PDF files as an attachments to the specified recipient.")
+    public String sendEmail(String recipientEmail, String subject, String content, ContentType type, String[] pdfFilePath) {
         String sender = "your-email@gmail.com";
 
         try {
             MimeMessage message = mailSender.createMimeMessage();
-            MimeMessageHelper helper = new MimeMessageHelper(message, true); // 'true' enables multipart for attachments
+            MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
             helper.setTo(recipientEmail);
-            helper.setSubject("[DASGS] Daily Knowledge: " + subject);
+            helper.setSubject(subject);
             helper.setFrom(sender);
-            helper.setText("Hello! Your daily knowledge synthesis for '" + subject +
-                    "' is attached. Enjoy!", false); // 'false' for plain text body
+            switch (type) {
+                case HTML -> helper.setText(content, true);
+                case TEXT -> helper.setText(content, false);
+            }
 
-            // Add Attachment
-            FileSystemResource file = new FileSystemResource(new File(pdfFilePath));
-            helper.addAttachment(file.getFilename(), file);
+            for(String pdfPath : pdfFilePath) {
+                pdfPath = System.getProperty("java.io.tmpdir") + File.separator + pdfPath;
+                FileSystemResource file = new FileSystemResource(new File(pdfPath));
+                helper.addAttachment(file.getFilename(), file);
+            }
 
             mailSender.send(message);
 
             System.out.println("🤖 Email sent successfully to: " + recipientEmail);
-            return "Email sent successfully to " + recipientEmail + " with PDF attachment.";
+            return "Email sent successfully to " + recipientEmail + " with PDF attachments.";
 
         } catch (Exception e) {
             System.err.println("Email Sending Failed: " + e.getMessage());
-            // Do NOT rethrow. This tool should gracefully fail on network/auth errors.
             return "Error: Could not send email. Check SMTP credentials or recipient address.";
         }
     }
