@@ -10,7 +10,6 @@ import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class ContentMcpServerApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(ContentMcpServerApplication.class, args);
     }
