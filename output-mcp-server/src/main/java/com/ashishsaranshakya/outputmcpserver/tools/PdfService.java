@@ -8,6 +8,7 @@ import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
 import org.springframework.ai.tool.annotation.Tool;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -16,6 +17,9 @@ import java.io.StringReader;
 
 @Service
 public class PdfService {
+    @Value("${output.subdir.name}")
+    private String OUPUT_SUBDIR;
+
     private String convertMarkdownToHtml(String markdown) {
         MutableDataSet options = new MutableDataSet();
         Parser parser = Parser.builder(options).build();
@@ -39,7 +43,7 @@ public class PdfService {
             description = "Converts final markdown study content to a PDF file and returns the local file path.")
     public String generatePdf(String title, String markdownContent) {
         String fileName = title.replaceAll("[^a-zA-Z0-9\\s]", "").replace(' ', '_') + "_" + System.currentTimeMillis() + ".pdf";
-        String filePath = System.getProperty("java.io.tmpdir") + File.separator + fileName;
+        String filePath = System.getProperty("user.dir") + File.separator + OUPUT_SUBDIR + File.separator + fileName;
 
         String htmlToRender = convertMarkdownToHtml(markdownContent);
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
