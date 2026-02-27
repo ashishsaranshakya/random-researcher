@@ -29,11 +29,6 @@ public class TaskController implements CommandLineRunner {
     private final ChatModel chatModel;
     private final List<ToolCallback> tools;
 
-//    public TaskController(ChatModel chatModel, List<ToolCallback> tools) {
-//        this.chatModel = chatModel;
-//        this.tools = tools;
-//    }
-
     public TaskController(ChatModel chatModel, SyncMcpToolCallbackProvider provider) {
         this.chatModel = chatModel;
         this.tools = Arrays.asList(provider.getToolCallbacks());
@@ -48,7 +43,7 @@ public class TaskController implements CommandLineRunner {
         var graph = AgentExecutor.builder()
                 .chatModel(chatModel)
                 .tools(tools)
-                .defaultSystem(Prompts.SYSTEM_PROMPT)
+                .defaultSystem(Prompts.RANDOM_RESEARCHER_SYSTEM_PROMPT)
                 .build();
 
         var workflow = graph.compile();
