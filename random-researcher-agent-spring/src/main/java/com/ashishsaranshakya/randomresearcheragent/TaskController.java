@@ -1,87 +1,76 @@
 package com.ashishsaranshakya.randomresearcheragent;
 
-import org.bsc.langgraph4j.NodeOutput;
-import org.bsc.langgraph4j.prebuilt.MessagesState;
-import org.bsc.langgraph4j.serializer.StateSerializer;
-import org.bsc.langgraph4j.spring.ai.agent.ReactAgent;
+import org.bsc.langgraph4j.CompiledGraph;
+import org.bsc.langgraph4j.GraphStateException;
 import org.bsc.langgraph4j.spring.ai.agentexecutor.AgentExecutor;
-import org.bsc.langgraph4j.spring.ai.serializer.std.SpringAIStateSerializer;
-import org.bsc.langgraph4j.state.AgentState;
-import org.bsc.langgraph4j.state.AgentStateFactory;
 import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
-import org.springframework.ai.content.Content;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
 import org.springframework.ai.tool.ToolCallback;
-import org.springframework.boot.CommandLineRunner;
-import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ServerErrorException;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+@RestController
+@RequestMapping("/agent")
+public class TaskController {
+    public record AgentRequest(String topic, String email) {}
 
-@Controller
-public class TaskController implements CommandLineRunner {
-    private static final org.slf4j.Logger log = org.slf4j.LoggerFactory.getLogger(TaskController.class);
+    private final CompiledGraph<AgentExecutor.State> randomResearcher;
+    private final CompiledGraph<AgentExecutor.State> studyStudyAgent;
 
-    private final ChatModel chatModel;
-    private final List<ToolCallback> tools;
+    public TaskController(ChatModel chatModel, SyncMcpToolCallbackProvider provider) throws GraphStateException {
 
-    public TaskController(ChatModel chatModel, SyncMcpToolCallbackProvider provider) {
-        this.chatModel = chatModel;
-        this.tools = Arrays.asList(provider.getToolCallbacks());
-    }
+        List<ToolCallback> tools = Arrays.asList(provider.getToolCallbacks());
 
-    @Override
-    public void run(String... args) throws Exception {
-
-        log.info("Welcome to the Spring Boot CLI application!");
-        System.out.println(tools);
-
-        var graph = AgentExecutor.builder()
+        this.randomResearcher = AgentExecutor.builder()
                 .chatModel(chatModel)
                 .tools(tools)
                 .defaultSystem(Prompts.RANDOM_RESEARCHER_SYSTEM_PROMPT)
-                .build();
+                .build()
+                .compile();
+        this.studyStudyAgent = AgentExecutor.builder()
+                .chatModel(chatModel)
+                .tools(tools)
+                .defaultSystem(Prompts.STUDY_NOTES_AGENT_SYSTEM_PROMPT)
+                .build()
+                .compile();
+    }
 
-        var workflow = graph.compile();
-        var topic = """
-            Understand exception flow in Spring MVC
-            
-            Learn @ExceptionHandler basics
-            """;
-        var email = "notificationservice088@gmail.com";
+    @PostMapping("/run-random-researcher")
+    public List<String> runRandomResearcher(@RequestBody AgentRequest request) {
+        String userPrompt = String.format("Topic: %s\nEmail: %s", request.topic(), request.email());
 
-//        var response = workflow.invoke(
-//                Map.of(
-//                        "messages",
-//                        List.of(new UserMessage(
-//                                String.format("Topic: %s\nEmail: %s", topic, email)
-//                        ))
-//                )
-//        );
-//
-//        response.get().messages()
-//                .stream()
-//                .forEach(System.out::println);
+        var response = randomResearcher.invoke(Map.of("messages", List.of(new UserMessage(userPrompt))));
 
-
-
-
-
-        var result = workflow.stream(Map.of( "messages", new UserMessage(String.format("Topic: %s\nEmail: %s", topic, email))));
-
-        var state = result.stream()
-                .peek( s -> System.out.println( s.node() ) )
-                .reduce((a, b) -> b)
-                .map( NodeOutput::state)
-                .orElseThrow();
-
-        log.info( "result: {}", state.lastMessage()
+        return response.orElseThrow(() -> new ServerErrorException("Internal Server Error", new Throwable()))
+                .messages()
+                .stream()
+                .filter(AssistantMessage.class::isInstance)
                 .map(AssistantMessage.class::cast)
                 .map(AssistantMessage::getText)
-                .orElseThrow() );
+                .toList();
+    }
+
+    @PostMapping("/run-study-agent")
+    public List<String> runStudyAgent(@RequestBody AgentRequest request) {
+        String userPrompt = String.format("Topic: %s\nEmail: %s", request.topic(), request.email());
+
+        var response = studyStudyAgent.invoke(Map.of("messages", List.of(new UserMessage(userPrompt))));
+
+        return response.orElseThrow(() -> new ServerErrorException("Internal Server Error", new Throwable()))
+                .messages()
+                .stream()
+                .filter(AssistantMessage.class::isInstance)
+                .map(AssistantMessage.class::cast)
+                .map(AssistantMessage::getText)
+                .toList();
     }
 }
