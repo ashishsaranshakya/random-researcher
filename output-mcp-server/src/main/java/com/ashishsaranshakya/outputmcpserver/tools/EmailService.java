@@ -1,7 +1,8 @@
 package com.ashishsaranshakya.outputmcpserver.tools;
 
 import jakarta.mail.internet.MimeMessage;
-import org.springframework.ai.tool.annotation.Tool;
+import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -24,9 +25,14 @@ public class EmailService {
     @Value("${output.subdir.name}")
     private String OUPUT_SUBDIR;
 
-    @Tool(name = "send_email",
+    @McpTool(name = "send_email",
             description = "Send the generated PDF files as an attachments to the specified recipient.")
-    public String sendEmail(String recipientEmail, String subject, String content, ContentType type, String[] pdfFilePath) {
+    public String sendEmail(
+            @McpToolParam String recipientEmail,
+            @McpToolParam String subject,
+            @McpToolParam String content,
+            @McpToolParam ContentType type,
+            @McpToolParam String[] pdfFilePath) {
         String sender = "your-email@gmail.com";
 
         try {

@@ -7,7 +7,8 @@ import com.lowagie.text.pdf.PdfWriter;
 import com.vladsch.flexmark.html.HtmlRenderer;
 import com.vladsch.flexmark.parser.Parser;
 import com.vladsch.flexmark.util.data.MutableDataSet;
-import org.springframework.ai.tool.annotation.Tool;
+import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -39,9 +40,11 @@ public class PdfService {
             """.formatted(htmlBody);
     }
 
-    @Tool(name = "generate_pdf",
+    @McpTool(name = "generate_pdf",
             description = "Converts final markdown study content to a PDF file and returns the local file path.")
-    public String generatePdf(String title, String markdownContent) {
+    public String generatePdf(
+            @McpToolParam String title,
+            @McpToolParam String markdownContent) {
         String fileName = title.replaceAll("[^a-zA-Z0-9\\s]", "").replace(' ', '_') + "_" + System.currentTimeMillis() + ".pdf";
         String filePath = System.getProperty("user.dir") + File.separator + OUPUT_SUBDIR + File.separator + fileName;
 

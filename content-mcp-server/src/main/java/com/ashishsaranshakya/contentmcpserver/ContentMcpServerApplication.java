@@ -14,8 +14,8 @@ public class ContentMcpServerApplication {
         SpringApplication.run(ContentMcpServerApplication.class, args);
     }
 
-    @Bean
-    public ToolCallbackProvider weatherTools(GoogleSearchTool googleSearchTool, FetchContentTool fetchContentTool) {
-        return MethodToolCallbackProvider.builder().toolObjects(googleSearchTool, fetchContentTool).build();
-    }
+//    @Bean
+//    public ToolCallbackProvider weatherTools(GoogleSearchTool googleSearchTool, FetchContentTool fetchContentTool) {
+//        return MethodToolCallbackProvider.builder().toolObjects(googleSearchTool, fetchContentTool).build();
+//    }
 }

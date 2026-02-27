@@ -1,5 +1,7 @@
 package com.ashishsaranshakya.contentmcpserver.tools;
 
+import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -24,9 +26,9 @@ public class GoogleSearchTool {
     public record SearchResult(String snippet, String source) {}
     public record GoogleSearchResponse(List<Item> items) {}
 
-    @Tool(name = "google_search_tool",
+    @McpTool(name = "google_search_tool",
             description = "Searches the web for general knowledge and returns top 5 snippets.")
-    public List<SearchResult> searchWeb(String query) {
+    public List<SearchResult> searchWeb(@McpToolParam String query) {
         try {
             GoogleSearchResponse apiResponse = restClient.get()
                     .uri(uriBuilder -> uriBuilder

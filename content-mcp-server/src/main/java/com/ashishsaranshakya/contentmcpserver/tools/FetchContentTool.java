@@ -3,6 +3,8 @@ package com.ashishsaranshakya.contentmcpserver.tools;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
+import org.springaicommunity.mcp.annotation.McpTool;
+import org.springaicommunity.mcp.annotation.McpToolParam;
 import org.springframework.ai.tool.annotation.Tool;
 import org.springframework.stereotype.Service;
 
@@ -12,9 +14,9 @@ import java.io.IOException;
 public class FetchContentTool {
     public record ScrapeResult(String content) {}
 
-    @Tool(name = "fetch_content",
+    @McpTool(name = "fetch_content",
             description = "Fetches and cleans the main text from a given URL for LLM processing.")
-    public ScrapeResult fetchContent(String url) {
+    public ScrapeResult fetchContent(@McpToolParam String url) {
         System.out.println("🤖 MCP Server: Executing scrape for URL: " + url);
 
         try {

@@ -15,8 +15,8 @@ public class OutputMcpServerApplication {
         SpringApplication.run(OutputMcpServerApplication.class, args);
     }
 
-    @Bean
-    public ToolCallbackProvider weatherTools(PdfService pdfService, EmailService emailService) {
-        return MethodToolCallbackProvider.builder().toolObjects(pdfService, emailService).build();
-    }
+//    @Bean
+//    public ToolCallbackProvider weatherTools(PdfService pdfService, EmailService emailService) {
+//        return MethodToolCallbackProvider.builder().toolObjects(pdfService, emailService).build();
+//    }
 }
