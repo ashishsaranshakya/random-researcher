@@ -109,7 +109,7 @@ IMPORTANT CONSTRAINTS
 """
 
 model = ChatOpenAI(
-    model="mistralai/devstral-2512:free",  # or any OpenRouter-supported model
+    model="nvidia/nemotron-3-nano-30b-a3b:free",  # or any OpenRouter-supported model
     openai_api_key=os.getenv("OPENROUTER_API_KEY"),
     base_url="https://openrouter.ai/api/v1",
     default_headers={
@@ -162,6 +162,7 @@ async def main():
 	email = "notificationservice088@gmail.com"
 	
 	# New user query structure guides the agent
+	print("topic: \n" + topic)
 	user_query = (
 		f"Topic '{topic}'\n"
 		f"Email: {email}"
