@@ -35,10 +35,15 @@ SYSTEM_PROMPT = (
     "6. **Final Acknowledgment:** After successful emailing, acknowledge that the full set of research reports has been processed and sent."
 )
 
-model = init_chat_model(
-	model_provider = "google_genai",
-	model = "gemini-2.5-flash",
-	google_api_key = os.getenv("GEMINI_API_KEY")
+model = ChatOpenAI(
+    # model="nvidia/nemotron-3-nano-30b-a3b:free",  # or any OpenRouter-supported model
+	model="stepfun/step-3.5-flash:free",
+    openai_api_key=os.getenv("OPENROUTER_API_KEY"),
+    base_url="https://openrouter.ai/api/v1",
+    default_headers={
+        "HTTP-Referer": "http://localhost",  # required by OpenRouter
+        "X-Title": "Random Researcher"
+    }
 )
 
 client = MultiServerMCPClient(
