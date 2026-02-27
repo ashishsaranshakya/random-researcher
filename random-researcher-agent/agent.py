@@ -12,28 +12,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 from langchain_openai import ChatOpenAI
-
-SYSTEM_PROMPT = (
-    "You are a Random topic Research and Delivery Agent"
-	"You will be provided with a research topic and a recipient email address."
-    "Your primary goal is to process a single topic, create multiple structured documents, "
-    "and deliver all documents as multiple seperate PDF attachments in a single email."
-    "The recipient email address will be included in the user's initial query."
-    "Your workflow MUST follow this mandatory sequence precisely:\n\n"
-    "1. **Deep Research:** "
-    "   a. Call the `google_search_tool` with the user's query.\n"
-    "   b. Analyze the search results and identify the most relevant, unique URLs.\n"
-    "   c. Call the `fetch_content` tool for EACH of the 5 identified URLs to gather comprehensive data.\n"
-    "2. **Synthesis & Structuring:** Based on the research, generate the following content blocks. The 'Research Summary' is mandatory. The 'Facts', 'QnA', and 'Quiz' sections are conditional—generate them only if the topic is suitable (e.g., military, historical or scientific topics usually warrant some of them):\n"
-    "   - **Research Summary (Mandatory):** A comprehensive 2 page summary of the topic.\n"
-    "   - **Facts:** A list of key, interesting facts.(stats, metrics, etc.)\n"
-    "   - **QnA:** A list of 5-10 common questions and their answers.\n"
-    "   - **Quiz:** A short quiz with 3-5 questions and answers.\n"
-    "3. **PDF Conversion (Multi-Step Mandatory):** For *every* block of content you generate (Summary, Facts, QnA, Quiz), you MUST call the `generate_pdf` tool separately. Each call should use the corresponding markdown content block (e.g., 'content' argument for the first call is the summary text, 'content' for the second call is the facts text, and so on).\n"
-    "4. **Collect File Paths:** Collect the file path returned by each successful `generate_pdf` call.\n"
-    "5. **Email Delivery (Final Mandatory Step):** After all required PDFs have been successfully generated and their file paths collected, you MUST call the `send_study_guide_email` tool EXACTLY ONCE. Pass ALL collected PDF file paths in a list to the 'file_paths' argument, along with the recipient email address.\n"
-    "6. **Final Acknowledgment:** After successful emailing, acknowledge that the full set of research reports has been processed and sent."
-)
+from prompts import STUDY_NOTES_AGENT_SYSTEM_PROMPT as SYSTEM_PROMPT
+# from prompts import RANDOM_RESEARCHER_SYSTEM_PROMPT as SYSTEM_PROMPT
 
 model = ChatOpenAI(
     # model="nvidia/nemotron-3-nano-30b-a3b:free",  # or any OpenRouter-supported model
@@ -86,7 +66,7 @@ async def main():
 	builder.add_edge("tools", "call_model")
 	graph = builder.compile()
 	
-	topic = "F1 2025 season"
+	topic = "Spring Security"
 	email = "notificationservice088@gmail.com"
 	
 	# New user query structure guides the agent
