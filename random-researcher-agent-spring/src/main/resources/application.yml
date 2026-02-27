@@ -1,0 +1,18 @@
+server:
+  port: 3000
+
+spring:
+  application:
+    name: random-researcher-agent-spring
+  ai:
+    mcp:
+      client:
+        type: SYNC
+        sse:
+          connections:
+            content:
+              url: http://localhost:8081
+              sse-endpoint: /sse
+            output:
+              url: http://localhost:8082
+              sse-endpoint: /sse
