@@ -7,26 +7,24 @@ import org.springframework.ai.openai.api.OpenAiApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import java.util.Map;
 
 @Configuration
 public class ChatModelConfig {
 
     @Bean
-    public ChatModel openaiModel() {
+    public ChatModel openaiModel(OpenRouterProperties props) {
         return OpenAiChatModel.builder()
                 .openAiApi(OpenAiApi.builder()
-                        .baseUrl("https://openrouter.ai/api")
-                        .apiKey("API_KEY")
+                        .baseUrl(props.getBaseUrl())
+                        .apiKey(props.getApiKey())
                         .build())
                 .defaultOptions(OpenAiChatOptions.builder()
-                        .model("nvidia/nemotron-3-nano-30b-a3b:free")
-                        .logprobs(false)
-                        .temperature(0.1)
-                        .httpHeaders(Map.of("HTTP-Referer", "http://localhost", "X-Title", "Random Researcher"))
+                        .model(props.getModel())
+                        .temperature(props.getTemperature())
+                        .logprobs(props.isLogprobs())
+                        .httpHeaders(props.getHttpHeaders())
                         .build())
                 .build();
-
     }
 
 }

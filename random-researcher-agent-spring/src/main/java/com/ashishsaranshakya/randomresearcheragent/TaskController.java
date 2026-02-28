@@ -3,7 +3,6 @@ package com.ashishsaranshakya.randomresearcheragent;
 import org.bsc.langgraph4j.CompiledGraph;
 import org.bsc.langgraph4j.GraphStateException;
 import org.bsc.langgraph4j.spring.ai.agentexecutor.AgentExecutor;
-import org.springframework.ai.chat.messages.AssistantMessage;
 import org.springframework.ai.chat.messages.UserMessage;
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.mcp.SyncMcpToolCallbackProvider;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.server.ServerErrorException;
 
 import java.util.Arrays;
 import java.util.List;
@@ -45,32 +43,26 @@ public class TaskController {
     }
 
     @PostMapping("/run-random-researcher")
-    public List<String> runRandomResearcher(@RequestBody AgentRequest request) {
+    public Map<String, String> runRandomResearcher(@RequestBody AgentRequest request) {
         String userPrompt = String.format("Topic: %s\nEmail: %s", request.topic(), request.email());
 
         var response = randomResearcher.invoke(Map.of("messages", List.of(new UserMessage(userPrompt))));
 
-        return response.orElseThrow(() -> new ServerErrorException("Internal Server Error", new Throwable()))
-                .messages()
-                .stream()
-                .filter(AssistantMessage.class::isInstance)
-                .map(AssistantMessage.class::cast)
-                .map(AssistantMessage::getText)
-                .toList();
+        var message = response.orElseThrow(() -> new RuntimeException("Internal Server Error"))
+                .messages().getLast().getText();
+
+        return Map.of("message", message);
     }
 
     @PostMapping("/run-study-agent")
-    public List<String> runStudyAgent(@RequestBody AgentRequest request) {
+    public Map<String, String> runStudyAgent(@RequestBody AgentRequest request) {
         String userPrompt = String.format("Topic: %s\nEmail: %s", request.topic(), request.email());
 
         var response = studyStudyAgent.invoke(Map.of("messages", List.of(new UserMessage(userPrompt))));
 
-        return response.orElseThrow(() -> new ServerErrorException("Internal Server Error", new Throwable()))
-                .messages()
-                .stream()
-                .filter(AssistantMessage.class::isInstance)
-                .map(AssistantMessage.class::cast)
-                .map(AssistantMessage::getText)
-                .toList();
+        var message = response.orElseThrow(() -> new RuntimeException("Internal Server Error"))
+                .messages().getLast().getText();
+
+        return Map.of("message", message);
     }
 }
